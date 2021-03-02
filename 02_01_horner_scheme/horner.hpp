@@ -1,9 +1,12 @@
 #pragma once
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <span>
 #include <vector>
+
+#define EPSILON 1.5e-05
 
 namespace horner
 {
@@ -24,14 +27,14 @@ namespace horner
       if(n < 1)
       {
         std::cout << "; remain = x";
-        if(tmp < 0) std::cout << "+" << abs(tmp);
+        if(tmp < 0) std::cout << "+" << std::abs(tmp);
         else std::cout << "-" << tmp;
         break;
       }
       result[len-n] = tmp;
-      
-      if(n < len)
-        std::cout << " + ";
+
+      if( (n < len) && (tmp > 0) )
+        std::cout << "+";
       
       std::cout << tmp;
       if(n == 1)
@@ -61,8 +64,9 @@ namespace horner
     for(int i = 0; i < len-1; ++i)
     {
       previous_num += result[i];
-      if(expected[i] != previous_num)
+      if( std::abs(expected[i] - previous_num) > EPSILON )
         return false;
+
       previous_num = result[i] * divisor;
     }
 
